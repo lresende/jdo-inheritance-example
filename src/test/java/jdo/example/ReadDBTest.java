@@ -45,7 +45,7 @@ public class ReadDBTest {
     public void inserted_data_should_be_read_back() throws Exception {
         List<Configuration> configurations = null;
 
-        configurations = readConfigurations();
+        configurations = readConfigurationsWithGetExtent();
 
         for (Configuration configuration : configurations) {
             System.out.println(configuration);
@@ -80,33 +80,17 @@ public class ReadDBTest {
         PersistenceManager persistenceManager = persistenceManagerFactory.getPersistenceManager();
 
         try {
-            System.out.println(">>> Set max fetch deep");
             persistenceManager.getFetchPlan().setMaxFetchDepth(3);
 
-            System.out.println(">>> Get extent");
             Extent extent = persistenceManager.getExtent(Configuration.class, true);
-            System.out.println(">>> Get extent iterator");
             Iterator<Configuration> iterator = extent.iterator();
             while (iterator.hasNext()) {
-                System.out.println(">>> Iterate next");
                 Configuration configuration = (Configuration) iterator.next();
+                Configuration detachedConfiguration = persistenceManager.detachCopy(configuration);
 
-                System.out.println(configuration);
-
-                // System.out.println(">>> Retrieve all");
-                // persistenceManager.retrieveAll(configuration);
-                configurations.add(configuration);
-
-                // System.out.println(configuration);
+                configurations.add(detachedConfiguration);
             }
-            // Query q = persistenceManager.newQuery(extent);
-
-            // configurations = (List<Configuration>) q.execute();
-
-            System.out.println(">>> Close all");
-            // extent.closeAll();
-
-            // configurations = (List<Configuration>) persistenceManager.newQuery(Configuration.class).execute();
+            extent.closeAll();
         } catch (Exception e) {
             System.out.println("Error loading configurations : " + e.getMessage());
             e.printStackTrace();
