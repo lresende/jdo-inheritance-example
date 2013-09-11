@@ -16,15 +16,15 @@
  */
 package jdo.example;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import javax.jdo.Extent;
-import javax.jdo.FetchPlan;
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
-import javax.jdo.Query;
 
 import model.Configuration;
 import model.DeploymentRule;
@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ReadDBTest {
-    private PersistenceManagerFactory persistenceManagerFactory = null;
+    private static PersistenceManagerFactory persistenceManagerFactory = null;
 
     @Before
     public void setup() {
@@ -45,7 +45,7 @@ public class ReadDBTest {
     public void inserted_data_should_be_read_back() throws Exception {
         List<Configuration> configurations = null;
 
-        configurations = readConfigurationsWithGetExtent();
+        configurations = readConfigurations();
 
         for (Configuration configuration : configurations) {
             System.out.println(configuration);
@@ -59,6 +59,9 @@ public class ReadDBTest {
 
         try {
             configurations = (List<Configuration>) persistenceManager.newQuery(Configuration.class).execute();
+            for (Configuration configuration : configurations) {
+                System.out.println(configuration);
+            }
         } catch (Exception e) {
             System.out.println("Error loading configurations : " + e.getMessage());
             e.printStackTrace();
@@ -73,19 +76,37 @@ public class ReadDBTest {
 
     @SuppressWarnings("rawtypes")
     private List<Configuration> readConfigurationsWithGetExtent() throws Exception {
-        List<Configuration> configurations = null;
+        List<Configuration> configurations = new ArrayList<Configuration>();
         PersistenceManager persistenceManager = persistenceManagerFactory.getPersistenceManager();
 
         try {
-            persistenceManager.currentTransaction().begin();
-            persistenceManager.getFetchPlan().addGroup("fetchgroup");
-            FetchPlan fp = persistenceManager.getFetchPlan();
-            Extent e = persistenceManager.getExtent(Configuration.class, true);
-            Query q = persistenceManager.newQuery(e);
-            configurations = (List<Configuration>) q.execute();
-            persistenceManager.currentTransaction().commit();
+            System.out.println(">>> Set max fetch deep");
+            persistenceManager.getFetchPlan().setMaxFetchDepth(3);
 
-            configurations = (List<Configuration>) persistenceManager.newQuery(Configuration.class).execute();
+            System.out.println(">>> Get extent");
+            Extent extent = persistenceManager.getExtent(Configuration.class, true);
+            System.out.println(">>> Get extent iterator");
+            Iterator<Configuration> iterator = extent.iterator();
+            while (iterator.hasNext()) {
+                System.out.println(">>> Iterate next");
+                Configuration configuration = (Configuration) iterator.next();
+
+                System.out.println(configuration);
+
+                // System.out.println(">>> Retrieve all");
+                // persistenceManager.retrieveAll(configuration);
+                configurations.add(configuration);
+
+                // System.out.println(configuration);
+            }
+            // Query q = persistenceManager.newQuery(extent);
+
+            // configurations = (List<Configuration>) q.execute();
+
+            System.out.println(">>> Close all");
+            // extent.closeAll();
+
+            // configurations = (List<Configuration>) persistenceManager.newQuery(Configuration.class).execute();
         } catch (Exception e) {
             System.out.println("Error loading configurations : " + e.getMessage());
             e.printStackTrace();
