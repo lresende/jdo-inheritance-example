@@ -25,6 +25,8 @@ import javax.jdo.annotations.Persistent;
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 public class PersistenceRule extends Rule {
 
+    private static final long serialVersionUID = 1710323042329112089L;
+
     @Persistent
     private String dbName;
 

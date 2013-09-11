@@ -16,6 +16,8 @@
  */
 package model;
 
+import java.io.Serializable;
+
 import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.Inheritance;
@@ -25,6 +27,8 @@ import javax.jdo.annotations.PersistenceCapable;
 @PersistenceCapable
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.CLASS_NAME)
-public class Rule {
+public class Rule implements Serializable {
+
+    private static final long serialVersionUID = -1604487381791746646L;
 
 }

@@ -16,6 +16,7 @@
  */
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,9 @@ import javax.jdo.annotations.VersionStrategy;
 @PersistenceCapable(detachable = "true")
 @Version(strategy = VersionStrategy.VERSION_NUMBER)
 @FetchGroup(name = "fetchgroup", members = { @Persistent(name = "rules") })
-public class Configuration {
+public class Configuration implements Serializable {
+
+    private static final long serialVersionUID = 4316751672018598410L;
 
     @PrimaryKey
     @Column(name = "CONFIGURATION_ID")

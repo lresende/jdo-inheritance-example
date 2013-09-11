@@ -25,6 +25,8 @@ import javax.jdo.annotations.Persistent;
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 public class DeploymentRule extends Rule {
 
+    private static final long serialVersionUID = 5177621280283123913L;
+
     @Persistent
     private String nodeName;
 
