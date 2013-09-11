@@ -21,28 +21,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.annotations.Column;
-import javax.jdo.annotations.Element;
-import javax.jdo.annotations.FetchGroup;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.Version;
 import javax.jdo.annotations.VersionStrategy;
 
 @PersistenceCapable(detachable = "true")
 @Version(strategy = VersionStrategy.VERSION_NUMBER)
-@FetchGroup(name = "fetchgroup", members = { @Persistent(name = "rules") })
 public class Configuration implements Serializable {
 
     private static final long serialVersionUID = 4316751672018598410L;
 
-    @PrimaryKey
+    @Persistent(primaryKey = "true")
     @Column(name = "CONFIGURATION_ID")
     private String id;
 
-    @Persistent(dependentElement = "true")
-    @Element(column = "CONFIGURATION_ID")
-    // @Column(name = "CONFIGURATION_ID")
+    @Persistent(dependentElement = "true", defaultFetchGroup = "true")
+    @Column(name = "CONFIGURATION_ID")
     private List<Rule> rules;
 
     public Configuration() {

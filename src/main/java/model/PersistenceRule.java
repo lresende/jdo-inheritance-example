@@ -27,7 +27,7 @@ public class PersistenceRule extends Rule {
 
     private static final long serialVersionUID = 1710323042329112089L;
 
-    @Persistent
+    @Persistent(defaultFetchGroup = "true")
     private String dbName;
 
     public PersistenceRule() {

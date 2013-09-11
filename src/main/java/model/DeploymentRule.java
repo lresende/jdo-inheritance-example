@@ -27,7 +27,7 @@ public class DeploymentRule extends Rule {
 
     private static final long serialVersionUID = 5177621280283123913L;
 
-    @Persistent
+    @Persistent(defaultFetchGroup = "true")
     private String nodeName;
 
     public DeploymentRule() {
